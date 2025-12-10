@@ -1,20 +1,90 @@
-// Ch7 Programs.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// Ch7 Programs.cpp : Exam Grader
 
 #include <iostream>
+#include <fstream>
+#include <iomanip>
+using namespace std;
 
-int main()
+const int num_questions = 20;
+
+// Function to read answers from a file into an array
+void readAnswersFromFile(const string& filename, char answers[]) 
 {
-    std::cout << "Hello World!\n";
+    ifstream file(filename);
+    if (!file) 
+    {
+        cerr << "Error opening file: " << filename << endl;
+        exit(1);
+    }
+    for (int i = 0; i < num_questions; i++) 
+    {
+        file >> answers[i];
+    }
+    file.close();
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+// Function to grade the exam
+int gradeExam(const char correct[], const char student[], int missed[], int& numMissed) 
+{
+    numMissed = 0;
+    for (int i = 0; i < num_questions; i++) 
+    {
+        if (student[i] != correct[i]) 
+        {
+            missed[numMissed] = i; // store index of missed question
+            numMissed++;
+        }
+    }
+    return num_questions - numMissed; // return number of correct answers
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+//output
+void displayResults(const char correct[], const char student[], const int missed[], int numMissed) 
+{
+    cout << "\n\t===============================" << endl;
+    cout << "   \tExam Grading Report   " << endl;
+    cout << "\t===============================\n" << endl;
+
+    //Header row
+    cout << left << setw(20) << "Missed Question" << setw(20) << "Correct Answer" << setw(20) << "Student Answer" << endl;
+    cout << string(60, '-') << endl;
+
+    //Rows for each missed question
+    for (int i = 0; i < numMissed; i++) 
+    {
+        int q = missed[i];
+        cout << left << setw(20) << (q + 1) << setw(20) << correct[q] << setw(20) << student[q] << endl;
+    }
+
+    cout << "\nTotal missed: " << numMissed << endl;
+
+    double percentage = ((num_questions - numMissed) / (double)num_questions) * 100.0;
+    cout << fixed << setprecision(2);
+    cout << "Percentage correct: " << percentage << "%" << endl;
+
+    if (percentage >= 70.0)
+        cout << "Result: PASS" << endl;
+    else
+        cout << "Result: FAIL" << endl;
+}
+
+//Main function
+int main() 
+{
+    char correct[num_questions];
+    char student[num_questions];
+    int missed[num_questions];
+    int numMissed;
+
+    // Read answers from files
+    readAnswersFromFile("CorrectAnswers.txt", correct);
+    readAnswersFromFile("StudentAnswers.txt", student);
+
+    // Grade exam
+    gradeExam(correct, student, missed, numMissed);
+
+    // Display results in spreadsheet format
+    displayResults(correct, student, missed, numMissed);
+
+    return 0;
+}

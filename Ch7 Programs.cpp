@@ -23,6 +23,7 @@ void getAnswers(const string& filename, char answers[])
     file.close();
 }
 
+
 //Function to grade the exam
 int gradeExam(const char correct[], const char student[], int missed[], int& numMissed) 
 {
@@ -43,7 +44,6 @@ void writeReport(const char correct[], const char student[], const int missed[],
 {
     cout << "\n" << endl;
     cout << string(54, '=') << endl;
-    //cout << center << setw(54) << "Exam Grading report" << endl;
     cout << "\t\tExam Grading Report" << endl;
     cout << string(54, '=') << endl;
    
@@ -62,6 +62,7 @@ void writeReport(const char correct[], const char student[], const int missed[],
     cout << "\nTotal missed: " << numMissed << endl;
 
     double percentage = ((num_questions - numMissed) / (double)num_questions) * 100.0;
+
     cout << fixed << setprecision(2);
     cout << "Percentage correct: " << percentage << "%" << endl;
 

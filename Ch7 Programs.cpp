@@ -23,7 +23,7 @@ vector<string> getTeam(const string& filename)
     string line;
     while (getline(file, line))//reads file line by line 
     {
-        teams.push_back(line);//adds line to vecto
+        teams.push_back(line);//adds line to vector
     }
     return teams;
 }

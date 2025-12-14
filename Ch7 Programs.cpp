@@ -7,23 +7,23 @@ using namespace std;
 
 const int num_questions = 20;
 
-// Function to read answers from a file into an array
-void readAnswersFromFile(const string& filename, char answers[]) 
+//Function to read answers from a file into an array
+void getAnswers(const string& filename, char answers[]) 
 {
     ifstream file(filename);
     if (!file) 
     {
-        cerr << "Error opening file: " << filename << endl;
+        cerr << "Error opening file: " << filename << endl;//error message if file couldn't open
         exit(1);
     }
-    for (int i = 0; i < num_questions; i++) 
+    for (int i = 0; i < num_questions; i++)//loop to store answers into array 
     {
         file >> answers[i];
     }
     file.close();
 }
 
-// Function to grade the exam
+//Function to grade the exam
 int gradeExam(const char correct[], const char student[], int missed[], int& numMissed) 
 {
     numMissed = 0;
@@ -31,23 +31,25 @@ int gradeExam(const char correct[], const char student[], int missed[], int& num
     {
         if (student[i] != correct[i]) 
         {
-            missed[numMissed] = i; // store index of missed question
+            missed[numMissed] = i;//store index of missed question
             numMissed++;
         }
     }
-    return num_questions - numMissed; // return number of correct answers
+    return num_questions - numMissed;//return number of correct answers
 }
 
 //output
-void displayResults(const char correct[], const char student[], const int missed[], int numMissed) 
+void writeReport(const char correct[], const char student[], const int missed[], int numMissed) 
 {
-    cout << "\n\t===============================" << endl;
-    cout << "   \tExam Grading Report   " << endl;
-    cout << "\t===============================\n" << endl;
+    cout << "\n" << endl;
+    cout << string(54, '=') << endl;
+    cout << "\t\tExam Grading Report" << endl;
+    cout << string(54, '=') << endl;
+   
 
     //Header row
     cout << left << setw(20) << "Missed Question" << setw(20) << "Correct Answer" << setw(20) << "Student Answer" << endl;
-    cout << string(60, '-') << endl;
+    cout << string(54, '-') << endl;
 
     //Rows for each missed question
     for (int i = 0; i < numMissed; i++) 
@@ -68,7 +70,6 @@ void displayResults(const char correct[], const char student[], const int missed
         cout << "Result: FAIL" << endl;
 }
 
-//Main function
 int main() 
 {
     char correct[num_questions];
@@ -76,15 +77,15 @@ int main()
     int missed[num_questions];
     int numMissed;
 
-    // Read answers from files
-    readAnswersFromFile("CorrectAnswers.txt", correct);
-    readAnswersFromFile("StudentAnswers.txt", student);
+    //Read answers from files
+    getAnswers("CorrectAnswers.txt", correct);
+    getAnswers("StudentAnswers.txt", student);
 
-    // Grade exam
+    //Grade exam
     gradeExam(correct, student, missed, numMissed);
 
-    // Display results in spreadsheet format
-    displayResults(correct, student, missed, numMissed);
+    //Display results
+    writeReport(correct, student, missed, numMissed);
 
     return 0;
 }

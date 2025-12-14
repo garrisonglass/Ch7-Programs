@@ -26,13 +26,13 @@ void getAnswers(const string& filename, char answers[])
 //Function to grade the exam
 int gradeExam(const char correct[], const char student[], int missed[], int& numMissed) 
 {
-    numMissed = 0;
-    for (int i = 0; i < num_questions; i++) 
+    numMissed = 0;//starts with no missed question
+    for (int i = 0; i < num_questions; i++)//loops through each question index 
     {
-        if (student[i] != correct[i]) 
+        if (student[i] != correct[i])//checks if the students answer is different from the correct answer 
         {
             missed[numMissed] = i;//store index of missed question
-            numMissed++;
+            numMissed++;//counts how many were wrong
         }
     }
     return num_questions - numMissed;//return number of correct answers
@@ -43,6 +43,7 @@ void writeReport(const char correct[], const char student[], const int missed[],
 {
     cout << "\n" << endl;
     cout << string(54, '=') << endl;
+    //cout << center << setw(54) << "Exam Grading report" << endl;
     cout << "\t\tExam Grading Report" << endl;
     cout << string(54, '=') << endl;
    
@@ -51,11 +52,11 @@ void writeReport(const char correct[], const char student[], const int missed[],
     cout << left << setw(20) << "Missed Question" << setw(20) << "Correct Answer" << setw(20) << "Student Answer" << endl;
     cout << string(54, '-') << endl;
 
-    //Rows for each missed question
-    for (int i = 0; i < numMissed; i++) 
+    
+    for (int i = 0; i < numMissed; i++)//loops through each missed question 
     {
-        int q = missed[i];
-        cout << left << setw(20) << (q + 1) << setw(20) << correct[q] << setw(20) << student[q] << endl;
+        int q = missed[i];//gets the index of missed questions
+        cout << left << setw(20) << (q + 1) << setw(20) << correct[q] << setw(20) << student[q] << endl;//note q+1, array starts at 0, exam starts at 1
     }
 
     cout << "\nTotal missed: " << numMissed << endl;

@@ -1,90 +1,168 @@
-// Ch7 Programs.cpp : Exam Grader
+// Ch7 Programs.cpp : Tic Tac Toe
 
 #include <iostream>
-#include <fstream>
+#include <array>
 #include <iomanip>
+
 using namespace std;
 
-const int num_questions = 20;
+const int N = 3;
 
-// Function to read answers from a file into an array
-void readAnswersFromFile(const string& filename, char answers[]) 
+void initBoard(array<array<char, N>, N>& board)
 {
-    ifstream file(filename);
-    if (!file) 
-    {
-        cerr << "Error opening file: " << filename << endl;
-        exit(1);
-    }
-    for (int i = 0; i < num_questions; i++) 
-    {
-        file >> answers[i];
-    }
-    file.close();
+    for (int r = 0; r < N; ++r)
+        for (int c = 0; c < N; ++c)
+            board[r][c] = '*';
 }
 
-// Function to grade the exam
-int gradeExam(const char correct[], const char student[], int missed[], int& numMissed) 
+void printBoard(const array<array<char, N>, N>& board)
 {
-    numMissed = 0;
-    for (int i = 0; i < num_questions; i++) 
+    cout << "\n   ";//indent for column headers
+    for (int c = 0; c < N; ++c)
     {
-        if (student[i] != correct[i]) 
+        cout << setw(4) << c + 1;//column numbers spaced out
+    }
+    cout << "\n";
+    cout << "     " << string(N * 4 - 1, '=') << "\n";
+    for (int r = 0; r < N; ++r)
+    {
+        cout << "|" << setw(1) << r + 1 << "|";//row number
+        for (int c = 0; c < N; ++c) {
+            cout << setw(4) << board[r][c];//each cell spaced evenly
+        }
+        cout << "\n\n";
+    }
+    cout << "\n";
+}
+
+
+bool isValidMove(const array<array<char, N>, N>& board, int row, int col)
+{
+    if (row < 0 || row >= N || col < 0 || col >= N) return false;
+    return board[row][col] == '*';
+}
+
+bool checkWin(const array<array<char, N>, N>& board, char p)
+{
+    // Check rows
+    for (int r = 0; r < N; ++r)
+    {
+        bool rowWin = true;
+        for (int c = 0; c < N; ++c)
         {
-            missed[numMissed] = i; // store index of missed question
-            numMissed++;
+            if (board[r][c] != p)
+            {
+                rowWin = false;
+                break;
+            }
+        }
+        if (rowWin) return true;
+    }
+
+    // Check columns
+    for (int c = 0; c < N; ++c)
+    {
+        bool colWin = true;
+        for (int r = 0; r < N; ++r)
+        {
+            if (board[r][c] != p)
+            {
+                colWin = false;
+                break;
+            }
+        }
+        if (colWin) return true;
+    }
+
+    // Check main diagonal
+    bool mainDiagWin = true;
+    for (int i = 0; i < N; ++i)
+    {
+        if (board[i][i] != p)
+        {
+            mainDiagWin = false;
+            break;
         }
     }
-    return num_questions - numMissed; // return number of correct answers
-}
+    if (mainDiagWin) return true;
 
-//output
-void displayResults(const char correct[], const char student[], const int missed[], int numMissed) 
-{
-    cout << "\n\t===============================" << endl;
-    cout << "   \tExam Grading Report   " << endl;
-    cout << "\t===============================\n" << endl;
-
-    //Header row
-    cout << left << setw(20) << "Missed Question" << setw(20) << "Correct Answer" << setw(20) << "Student Answer" << endl;
-    cout << string(60, '-') << endl;
-
-    //Rows for each missed question
-    for (int i = 0; i < numMissed; i++) 
+    // Check anti-diagonal
+    bool antiDiagWin = true;
+    for (int i = 0; i < N; ++i)
     {
-        int q = missed[i];
-        cout << left << setw(20) << (q + 1) << setw(20) << correct[q] << setw(20) << student[q] << endl;
+        if (board[i][N - 1 - i] != p)
+        {
+            antiDiagWin = false;
+            break;
+        }
     }
+    if (antiDiagWin) return true;
 
-    cout << "\nTotal missed: " << numMissed << endl;
-
-    double percentage = ((num_questions - numMissed) / (double)num_questions) * 100.0;
-    cout << fixed << setprecision(2);
-    cout << "Percentage correct: " << percentage << "%" << endl;
-
-    if (percentage >= 70.0)
-        cout << "Result: PASS" << endl;
-    else
-        cout << "Result: FAIL" << endl;
+    return false;
 }
 
-//Main function
-int main() 
+bool checkDraw(const array<array<char, N>, N>& board)
 {
-    char correct[num_questions];
-    char student[num_questions];
-    int missed[num_questions];
-    int numMissed;
+    for (int r = 0; r < N; ++r)
+        for (int c = 0; c < N; ++c)
+            if (board[r][c] == '*') return false;
+    return true;
+}
 
-    // Read answers from files
-    readAnswersFromFile("CorrectAnswers.txt", correct);
-    readAnswersFromFile("StudentAnswers.txt", student);
+void makeMove(array<array<char, N>, N>& board, int row, int col, char p)
+{
+    board[row][col] = p;
+}
 
-    // Grade exam
-    gradeExam(correct, student, missed, numMissed);
+char switchPlayer(char p)
+{
+    return (p == 'X') ? 'O' : 'X';
+}
 
-    // Display results in spreadsheet format
-    displayResults(correct, student, missed, numMissed);
+int main()
+{
+    array<array<char, N>, N> board;
+    initBoard(board);
+
+    char current = 'X';
+    cout << "Tic-Tac-Toe (Player X vs Player O)\n";
+    printBoard(board);
+
+    while (true)
+    {
+        int row, col;
+        cout << "Player " << current << ", enter your move (row col, 1-3 1-3): ";
+        if (!(cin >> row >> col))
+        {
+            cout << "Invalid input. Exiting.\n";
+            return 0;
+        }
+
+        // Convert to 0-based
+        row -= 1; col -= 1;
+
+        if (!isValidMove(board, row, col))
+        {
+            cout << "Invalid move. Try again.\n";
+            continue;
+        }
+
+        makeMove(board, row, col, current);
+        printBoard(board);
+
+        if (checkWin(board, current))
+        {
+            cout << "Player " << current << " wins!\n";
+            break;
+        }
+        if (checkDraw(board))
+        {
+            cout << "It's a draw!\n";
+            break;
+        }
+
+        current = switchPlayer(current);
+    }
 
     return 0;
 }

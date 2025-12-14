@@ -8,14 +8,14 @@ using namespace std;
 
 const int N = 3;
 
-void initBoard(array<array<char, N>, N>& board)
+void initBoard(array<array<char, N>, N>& board)//fills empty spaces with *
 {
     for (int r = 0; r < N; ++r)
         for (int c = 0; c < N; ++c)
             board[r][c] = '*';
 }
 
-void printBoard(const array<array<char, N>, N>& board)
+void printBoard(const array<array<char, N>, N>& board)//Function to print the board
 {
     cout << "\n   ";//indent for column headers
     for (int c = 0; c < N; ++c)
@@ -27,7 +27,8 @@ void printBoard(const array<array<char, N>, N>& board)
     for (int r = 0; r < N; ++r)
     {
         cout << "|" << setw(1) << r + 1 << "|";//row number
-        for (int c = 0; c < N; ++c) {
+        for (int c = 0; c < N; ++c) 
+        {
             cout << setw(4) << board[r][c];//each cell spaced evenly
         }
         cout << "\n\n";

@@ -39,7 +39,7 @@ void displayBoard(const array<array<char, N>, N>& board)
 //checks valid input
 bool isValidMove(const array<array<char, N>, N>& board, int row, int col)
 {
-    if (row < 0 || row >= N || col < 0 || col >= N) return false;//Check the move is within rrange 1-3
+    if (row < 0 || row >= N || col < 0 || col >= N) return false;//Check the move is within range 1-3
     return board[row][col] == '*';//check to make sure the cell was empty
 }
 //check for the win

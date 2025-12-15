@@ -7,51 +7,51 @@
 using namespace std;
 
 const int N = 3;
-
-void initBoard(array<array<char, N>, N>& board)//fills empty spaces with *
+//initialize Board, fills empty spaces with *
+void initializeBoard(array<array<char, N>, N>& board) 
 {
-    for (int r = 0; r < N; ++r)
-        for (int c = 0; c < N; ++c)
-            board[r][c] = '*';
+    for (int r = 0; r < N; ++r)//loops through every row, 0-2
+        for (int c = 0; c < N; ++c)//loops through every column 0-2
+            board[r][c] = '*';//assigns * to each spot
 }
-
-void printBoard(const array<array<char, N>, N>& board)//Function to print the board
+//Function formats the board in a nice grid
+void displayBoard(const array<array<char, N>, N>& board)
 {
     cout << "\n   ";//indent for column headers
-    for (int c = 0; c < N; ++c)
+    for (int c = 0; c < N; ++c)//loops through each column 0, 1, and 2
     {
-        cout << setw(4) << c + 1;//column numbers spaced out
+        cout << setw(4) << c + 1;//prints column numbers spaced out
     }
     cout << "\n";
-    cout << "     " << string(N * 4 - 1, '=') << "\n";
-    for (int r = 0; r < N; ++r)
+    cout << "     " << string(N * 4 - 1, '=') << "\n";//prints a seperator line
+    for (int r = 0; r < N; ++r)//loops through each row 0, 1, and 2
     {
-        cout << "|" << setw(1) << r + 1 << "|";//row number
+        cout << "|" << setw(1) << r + 1 << "|";//prints row number
         for (int c = 0; c < N; ++c) 
         {
-            cout << setw(4) << board[r][c];//each cell spaced evenly
+            cout << setw(4) << board[r][c];//prints each cell stored in the board, spaced evenly
         }
         cout << "\n\n";
     }
     cout << "\n";
 }
 
-
+//checks valid input
 bool isValidMove(const array<array<char, N>, N>& board, int row, int col)
 {
-    if (row < 0 || row >= N || col < 0 || col >= N) return false;
-    return board[row][col] == '*';
+    if (row < 0 || row >= N || col < 0 || col >= N) return false;//Check the move is within rrange 1-3
+    return board[row][col] == '*';//check to make sure the cell was empty
 }
-
+//check for the win
 bool checkWin(const array<array<char, N>, N>& board, char p)
 {
-    // Check rows
-    for (int r = 0; r < N; ++r)
+    //check rows
+    for (int r = 0; r < N; ++r)//loops through each row
     {
-        bool rowWin = true;
-        for (int c = 0; c < N; ++c)
+        bool rowWin = true;//assumes true then trys to prove it wrong
+        for (int c = 0; c < N; ++c)//loops through the column of each row
         {
-            if (board[r][c] != p)
+            if (board[r][c] != p)//checks to see if the column of each row matches the current player
             {
                 rowWin = false;
                 break;
@@ -59,8 +59,7 @@ bool checkWin(const array<array<char, N>, N>& board, char p)
         }
         if (rowWin) return true;
     }
-
-    // Check columns
+    //check columns, works the same as above but checks columns then rows
     for (int c = 0; c < N; ++c)
     {
         bool colWin = true;
@@ -75,59 +74,59 @@ bool checkWin(const array<array<char, N>, N>& board, char p)
         if (colWin) return true;
     }
 
-    // Check main diagonal
-    bool mainDiagWin = true;
-    for (int i = 0; i < N; ++i)
+    //Check top left to bottow right diagonal
+    bool Back_Slash = true;
+    for (int i = 0; i < N; ++i)//loops through the each index
     {
-        if (board[i][i] != p)
+        if (board[i][i] != p)//checks if cells 00, 11, ans 22 all equal the current player
         {
-            mainDiagWin = false;
+            Back_Slash = false;
             break;
         }
     }
-    if (mainDiagWin) return true;
+    if (Back_Slash) return true;
 
-    // Check anti-diagonal
-    bool antiDiagWin = true;
-    for (int i = 0; i < N; ++i)
+    //Check top right to bottom left diagonal
+    bool ForwardSlash = true;
+    for (int i = 0; i < N; ++i)//;loops though each index
     {
-        if (board[i][N - 1 - i] != p)
+        if (board[i][N - 1 - i] != p)//checks if cells 02,11, and 20 are equal to the current player. 
         {
-            antiDiagWin = false;
+            ForwardSlash = false;
             break;
         }
     }
-    if (antiDiagWin) return true;
+    if (ForwardSlash) return true;
 
     return false;
 }
 
-bool checkDraw(const array<array<char, N>, N>& board)
+bool checkDraw(const array<array<char, N>, N>& board)//function to check for a draw
 {
-    for (int r = 0; r < N; ++r)
-        for (int c = 0; c < N; ++c)
-            if (board[r][c] == '*') return false;
+    for (int r = 0; r < N; ++r)//loops through each roww
+        for (int c = 0; c < N; ++c)//loops through each column
+            if (board[r][c] == '*') return false;//checks for empty spcase 
     return true;
 }
 
-void makeMove(array<array<char, N>, N>& board, int row, int col, char p)
+void makeMove(array<array<char, N>, N>& board, int row, int col, char p)//function to place the X and O
 {
-    board[row][col] = p;
+    board[row][col] = p;//updates the board
 }
 
-char switchPlayer(char p)
+char switchPlayer(char p)//switches between player
 {
-    return (p == 'X') ? 'O' : 'X';
+    return (p == 'X') ? 'O' : 'X';//if p is X, return O, otherwise retune X
 }
 
 int main()
 {
-    array<array<char, N>, N> board;
-    initBoard(board);
+    array<array<char, N>, N> board;//creates the board
+    initializeBoard(board);//fills the empty space with *
 
-    char current = 'X';
+    char current = 'X';//X goes first
     cout << "Tic-Tac-Toe (Player X vs Player O)\n";
-    printBoard(board);
+    displayBoard(board);//prints board
 
     while (true)
     {
@@ -135,12 +134,13 @@ int main()
         cout << "Player " << current << ", enter your move (row col, 1-3 1-3): ";
         if (!(cin >> row >> col))
         {
-            cout << "Invalid input. Exiting.\n";
-            return 0;
+            cout << "Invalid input. Try again.\n";
+            cin.clear();//clear the error state
+            cin.ignore(1000, '\n');//throw away the bad input
+            continue;//restart the loop
         }
-
-        // Convert to 0-based
-        row -= 1; col -= 1;
+        
+        row -= 1; col -= 1;//convert to 0-based
 
         if (!isValidMove(board, row, col))
         {
@@ -148,21 +148,21 @@ int main()
             continue;
         }
 
-        makeMove(board, row, col, current);
-        printBoard(board);
+        makeMove(board, row, col, current);//updates the board
+        displayBoard(board);//prints updated board
 
-        if (checkWin(board, current))
+        if (checkWin(board, current))//checks for win
         {
             cout << "Player " << current << " wins!\n";
             break;
         }
-        if (checkDraw(board))
+        if (checkDraw(board))//checks for draw
         {
             cout << "It's a draw!\n";
             break;
         }
 
-        current = switchPlayer(current);
+        current = switchPlayer(current);//switches player
     }
 
     return 0;
